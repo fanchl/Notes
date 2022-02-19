@@ -1473,4 +1473,135 @@ B是A的子结构， 即 A中有出现和B相同的结构和节点值。
 输出：[1,2,3,4,8,12,11,10,9,5,6,7]
 ```
 
+> 思路：
+>
+> <img src="https://pic.leetcode-cn.com/ad10b8cab62fdab0261302be2b75f4faceded16a278ddd85281687ab7a6be63e-Picture5.png" style="zoom:33%;" />
+>
+> ```C++
+> class Solution {
+> public:
+>     vector<int> spiralOrder(vector<vector<int>>& matrix) {
+>         vector<int> res;
+>         if (matrix.size() == 0 || matrix[0].size() == 0) return res;
+>         int t = 0, b = matrix.size() - 1, l = 0, r = matrix[0].size() - 1;
+>         while(true){
+>             for (int i = l; i <= r; i++){
+>                 res.push_back(matrix[t][i]);
+>             }
+>             if (++t > b) break;
+>             for (int i = t; i <= b; i++){
+>                 res.push_back(matrix[i][r]);
+>             }
+>             if (--r < l) break;
+>             for (int i = r; i >= l; i--){
+>                 res.push_back(matrix[b][i]);
+>             }
+>             if (--b < t) break;
+>             for (int i = b; i >= t; i--){
+>                 res.push_back(matrix[i][l]);
+>             }
+>             if (++l > r) break;
+>         }
+>         return res;
+>     }
+> };
+> ```
+
+
+
+## 30 包含 min 函数的栈
+
+定义栈的数据结构，请在该类型中实现一个能够得到栈的最小元素的 min 函数在该栈中，调用 min、push 及 pop 的时间复杂度都是 O(1)。
+
+**示例:**
+
+```
+MinStack minStack = new MinStack();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+minStack.min();   --> 返回 -3.
+minStack.pop();
+minStack.top();      --> 返回 0.
+minStack.min();   --> 返回 -2.
+```
+
+**提示：**
+
+1. 各函数的调用总次数不超过 20000 次
+
+> 思路：辅助栈
+>
+> <img src="https://pic.leetcode-cn.com/f31f4b7f5e91d46ea610b6685c593e12bf798a9b8336b0560b6b520956dd5272-Picture1.png" style="zoom:48%;" />
+>
+> ```C++
+> class MinStack {
+> public:
+>     stack<int> A;
+>     stack<int> B;
+>     /** initialize your data structure here. */
+>     MinStack() {
+>         
+>     }
+>     
+>     void push(int x) {
+>         A.push(x);
+>         if (B.size() ==  0 || B.top() >= x){
+>             B.push(x);
+>         }
+>     }
+>     
+>     void pop() {
+>         if (A.top() == B.top()){
+>             A.pop();
+>             B.pop();
+>         } else {
+>             A.pop();
+>         }
+>     }
+>     
+>     int top() {
+>         return A.top();
+>     }
+>     
+>     int min() {
+>         return B.top();
+>     }
+> };
+> ```
+
+
+
+## 31 栈的压入、弹出序列
+
+输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否为该栈的弹出顺序。假设压入栈的所有数字均不相等。例如，序列 {1,2,3,4,5} 是某栈的压栈序列，序列 {4,5,3,2,1} 是该压栈序列对应的一个弹出序列，但 {4,3,5,1,2} 就不可能是该压栈序列的弹出序列。
+
+**示例 1：**
+
+```
+输入：pushed = [1,2,3,4,5], popped = [4,5,3,2,1]
+输出：true
+解释：我们可以按以下顺序执行：
+push(1), push(2), push(3), push(4), pop() -> 4,
+push(5), pop() -> 5, pop() -> 3, pop() -> 2, pop() -> 1
+```
+
+**示例 2：**
+
+```
+输入：pushed = [1,2,3,4,5], popped = [4,3,5,1,2]
+输出：false
+解释：1 不能在 2 之前弹出。
+```
+
+提示：
+
+```
+0 <= pushed.length == popped.length <= 1000
+0 <= pushed[i], popped[i] < 1000
+pushed 是 popped 的排列。
+```
+
+
+
 
