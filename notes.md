@@ -12,7 +12,17 @@ max min pow
 ListNode* res = new ListNode(0), *cur = res;
 ```
 
+### 类
 
+**new创建类对象与不用new区别****
+
+下面是总结的一些关于new创建类对象特点：
+
+- new创建类对象需要指针接收，一处初始化，多处使用
+- new创建类对象使用完需delete销毁
+- new创建对象直接使用堆空间，而局部不用new定义类对象则使用栈空间
+- new对象指针用途广泛，比如作为函数返回值、函数参数等
+- 频繁调用场合并不适合new，就像new申请和释放内存一样
 
 ### map
 
@@ -1601,6 +1611,439 @@ push(5), pop() -> 5, pop() -> 3, pop() -> 2, pop() -> 1
 0 <= pushed[i], popped[i] < 1000
 pushed 是 popped 的排列。
 ```
+
+> 思路：
+>
+> <img src="https://pic.leetcode-cn.com/c880f045c03a8e03b7908b2d49b658a9a32ba8f5d40cb19da62db32c7eb58830-Picture1.png" style="zoom: 33%;" />
+>
+> ```C++
+> class Solution {
+> public:
+>     bool validateStackSequences(vector<int>& pushed, vector<int>& popped) {
+>         stack<int> s;
+>         int j = 0;
+>         for (int i = 0; i < pushed.size(); i++){
+>             s.push(pushed[i]);
+>             while (s.size() > 0 && s.top() == popped[j]){
+>                 s.pop();
+>                 j++;
+>             }
+>         }
+>         return s.empty();
+>     }
+> };
+> ```
+
+
+
+## 32-1 从上到下打印二叉树
+
+从上到下按层打印二叉树，同一层的节点按从左到右的顺序打印，每一层打印到一行。
+
+例如:
+给定二叉树: `[3,9,20,null,null,15,7]`,
+
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+
+返回：
+
+```
+[3,9,20,15,7]
+```
+
+> 思路：BFS / 队列
+>
+> 按层打印。
+>
+> ```C++
+> class Solution {
+> public:
+>     vector<int> levelOrder(TreeNode* root) {
+>         queue<TreeNode*> q;
+>         vector<int> res;
+>         if (root == nullptr) return res;
+>         q.push(root);
+>         while(!q.empty()){
+>             res.push_back(q.front() -> val);
+>             if(q.front() -> left != nullptr){
+>                 q.push(q.front() -> left);
+>             }
+>             if(q.front() -> right != nullptr){
+>                 q.push(q.front() -> right);
+>             }
+>             q.pop();
+>         }
+>         return res;
+>     }
+> };
+> ```
+
+
+
+## 32-2 从上到下打印二叉树
+
+从上到下按层打印二叉树，同一层的节点按从左到右的顺序打印，每一层打印到一行。
+
+例如:
+给定二叉树: `[3,9,20,null,null,15,7]`,
+
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+
+返回其层次遍历结果：
+
+```
+[
+  [3],
+  [9,20],
+  [15,7]
+]
+```
+
+> 思路：BFS
+>
+> 使用 tmp 数组，然后通过队列中现在的长度来判断这一层的输出个数！
+>
+> ```C++
+> class Solution {
+> public:
+>     vector<vector<int>> levelOrder(TreeNode* root) {
+>         vector<vector<int>> res;
+>         queue<TreeNode*> q;
+>         if (root == nullptr) return res;
+>         q.push(root);
+>         while(!q.empty()){
+>             vector<int> tmp;
+>             for(int i = q.size(); i > 0; i--){
+>                 tmp.push_back(q.front() -> val);
+>                 if (q.front() -> left != nullptr){
+>                     q.push(q.front() -> left);
+>                 }
+>                 if (q.front() -> right != nullptr){
+>                     q.push(q.front() -> right);
+>                 }
+>                 q.pop();
+>             }
+>             res.push_back(tmp);
+>         }
+>         return res;
+>     }
+> };
+> ```
+
+
+
+## 32-3 从上到下打印二叉树
+
+请实现一个函数按照之字形顺序打印二叉树，即第一行按照从左到右的顺序打印，第二层按照从右到左的顺序打印，第三行再按照从左到右的顺序打印，其他行以此类推。
+
+例如:
+给定二叉树: `[3,9,20,null,null,15,7]`,
+
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+
+返回其层次遍历结果：
+
+```
+[
+  [3],
+  [20,9],
+  [15,7]
+]
+```
+
+> 思路：
+>
+> 判断奇偶反转。
+>
+> ```C++
+> class Solution {
+> public:
+>     vector<vector<int>> levelOrder(TreeNode* root) {
+>         queue<TreeNode*> q;
+>         vector<vector<int>> res;
+>         if (root == nullptr) return res;
+>         q.push(root);
+>         while (!q.empty()){
+>             vector<int> tmp;
+>             for (int i = q.size(); i > 0; i--){
+>                 tmp.push_back(q.front() -> val);
+>                 if (q.front() -> left != nullptr) q.push(q.front() -> left);
+>                 if (q.front() -> right != nullptr) q.push(q.front() -> right);
+>                 q.pop();
+>             }
+>             if (res.size() %2 == 1) reverse(tmp.begin(), tmp.end());
+>             res.push_back(tmp);
+>         }
+>         return res;
+>     }
+> };
+> ```
+
+
+
+## 33 二叉树的后续遍历序列
+
+输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。如果是则返回 `true`，否则返回 `false`。假设输入的数组的任意两个数字都互不相同。
+
+参考以下这颗二叉搜索树：
+
+```
+     5
+    / \
+   2   6
+  / \
+ 1   3
+```
+
+**示例 1：**
+
+```
+输入: [1,6,3,2,5]
+输出: false
+```
+
+**示例 2：**
+
+```
+输入: [1,3,2,6,5]
+输出: true
+```
+
+> 思路：递归分治
+>
+> **二叉搜索树定义：** 左子树中所有节点的值 < 根节点的值；右子树中所有节点的值 > 根节点的值；其左、右子树也分别为二叉搜索树。
+>
+> 根据二叉搜索树的定义，可以通过递归，判断所有子树的 **正确性** （即其后序遍历是否满足二叉搜索树的定义） ，若所有子树都正确，则此序列为二叉搜索树的后序遍历。
+>
+> <img src="https://pic.leetcode-cn.com/4a2780853b72a0553194773ff65c8c81ddcc4ee5d818cb3528d5f8dd5fa3b6d8-Picture1.png" style="zoom:33%;" />
+>
+> + 终止条件：当 `i >= j`，说明此树节点数量  <= 1，无需判别正确性，直接返回 true。
+> + 返回值：所有子树都需正确才可判定正确，因此使用 **与逻辑符** &&&& 连接。
+>   + `p == j` : 判断 **此树** 是否正确。
+>   + `recur(i, m - 1)` :  判断 **此树的左子树** 是否正确。
+>   + `recur(m, j - 1)` : 判断 **此树的右子树** 是否正确。
+>
+> ```C++
+> class Solution {
+> public:
+>     bool verifyPostorder(vector<int>& postorder) {
+>         return recur(postorder, 0, postorder.size() - 1);
+>     }
+> 
+>     bool recur(vector<int>& postorder, int i, int j){
+>         if (i >= j) return true;
+>         int p = i;
+>         while (postorder[p] < postorder[j]) p++;
+>         int m = p;
+>         while (postorder[p] > postorder[j]) p++;
+>         return p == j && recur(postorder, i, m - 1) && recur(postorder, m, j - 1);
+>     }
+> };
+> ```
+
+
+
+## 34 二叉树中和为某一值的路径
+
+给你二叉树的根节点 root 和一个整数目标和 targetSum ，找出所有 从根节点到叶子节点 路径总和等于给定目标和的路径。
+
+叶子节点 是指没有子节点的节点。
+
+**示例 1：**
+
+<img src="https://assets.leetcode.com/uploads/2021/01/18/pathsumii1.jpg" style="zoom:50%;" />
+
+```
+输入：root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22
+输出：[[5,4,11,2],[5,8,4,5]]
+```
+
+**示例 2：**
+
+<img src="https://assets.leetcode.com/uploads/2021/01/18/pathsum2.jpg" style="zoom: 50%;" />
+
+```
+输入：root = [1,2,3], targetSum = 5
+输出：[]
+```
+
+**示例 3：**
+
+```
+输入：root = [1,2], targetSum = 0
+输出：[]
+```
+
+> 思路：递归，回溯法
+>
+> ```C++
+> class Solution {
+> public:
+>     vector<vector<int>> res;
+>     vector<int> path;
+>     vector<vector<int>> pathSum(TreeNode* root, int target) {
+>         recur(root, target);
+>         return res;
+>     }
+> 
+>     void recur(TreeNode* root, int target){
+>         if (root == nullptr) return;
+>         path.push_back(root -> val);
+>         target = target - root -> val;
+>         if (target == 0 && root -> left == nullptr && root -> right == nullptr){
+>             res.push_back(path);
+>         }
+>         recur(root -> left, target);
+>         recur(root -> right, target);
+>         path.pop_back();
+>     }
+> };
+> ```
+
+
+
+## 35 复杂链表的复制
+
+请实现 copyRandomList 函数，复制一个复杂链表。在复杂链表中，每个节点除了有一个 next 指针指向下一个节点，还有一个 random 指针指向链表中的任意节点或者 null。
+
+**示例 1：**
+
+<img src="https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2020/01/09/e1.png" style="zoom: 33%;" />
+
+```
+输入：head = [[7,null],[13,0],[11,4],[10,2],[1,0]]
+输出：[[7,null],[13,0],[11,4],[10,2],[1,0]]
+```
+
+**示例 2：**
+
+<img src="https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2020/01/09/e2.png" style="zoom:33%;" />
+
+```
+输入：head = [[1,1],[2,1]]
+输出：[[1,1],[2,1]]
+```
+
+**示例 3：**
+
+<img src="https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2020/01/09/e3.png" style="zoom:33%;" />
+
+```
+输入：head = [[3,null],[3,0],[3,null]]
+输出：[[3,null],[3,0],[3,null]]
+```
+
+**示例 4：**
+
+```
+输入：head = []
+输出：[]
+解释：给定的链表为空（空指针），因此返回 null。
+```
+
+> 思路：哈希表
+>
+> 利用哈希表的查询特点，考虑构建 **原链表节点** 和 **新链表对应节点** 的键值对映射关系，再遍历构建新链表各节点的 `next` 和 `random` 引用指向即可。
+>
+> ```C++
+> class Solution {
+> public:
+>     Node* copyRandomList(Node* head) {
+>         unordered_map<Node*, Node*> m;
+>         Node* cur = head;
+>         while(cur != nullptr){
+>             m[cur] = new Node(cur -> val);
+>             cur = cur -> next;
+>         }
+>         cur = head;
+>         while(cur != nullptr){
+>             m[cur] -> next = m[cur -> next];
+>             m[cur] -> random = m[cur -> random];
+>             cur = cur -> next;
+>         }
+>         return m[head];
+>     }
+> };
+> ```
+
+
+
+## 36 二叉搜索树与双向链表
+
+输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的循环双向链表。要求不能创建任何新的节点，只能调整树中节点指针的指向。
+
+为了让您更好地理解问题，以下面的二叉搜索树为例：
+
+<img src="https://assets.leetcode.com/uploads/2018/10/12/bstdlloriginalbst.png" style="zoom: 50%;" />
+
+我们希望将这个二叉搜索树转化为双向循环链表。链表中的每个节点都有一个前驱和后继指针。对于双向循环链表，第一个节点的前驱是最后一个节点，最后一个节点的后继是第一个节点。
+
+下图展示了上面的二叉搜索树转化成的链表。“head” 表示指向链表中有最小元素的节点。
+
+<img src="https://assets.leetcode.com/uploads/2018/10/12/bstdllreturndll.png" style="zoom: 50%;" />
+
+特别地，我们希望可以就地完成转换操作。当转化完成以后，树中节点的左指针需要指向前驱，树中节点的右指针需要指向后继。还需要返回链表中的第一个节点的指针。
+
+> 思路：中序遍历
+>
+> ```C++
+> // 打印中序遍历
+> void dfs(Node* root) {
+>     if(root == nullptr) return;
+>     dfs(root->left); // 左
+>     cout << root->val << endl; // 根
+>     dfs(root->right); // 右
+> }
+> ```
+>
+> <img src="https://pic.leetcode-cn.com/1599401091-PKIjds-Picture1.png" style="zoom: 33%;" />
+>
+> ```C++
+> class Solution {
+> public:
+>     Node* treeToDoublyList(Node* root) {
+>         if (root == nullptr) return nullptr;
+>         head = dfs(root);
+>         head -> left = pre;
+>         pre -> right = head;
+>         return head;
+> 
+>     }
+> 
+> private:
+>     Node* pre, *head;
+>     Node* dfs(Node* cur){
+>         if (cur == nullptr) return nullptr;
+>         dfs(cur -> left);
+>         if (pre == nullptr) head = cur;
+>         else {
+>             pre -> right = cur;
+>             cur -> left = pre;
+>         }
+>         pre = cur;
+>         dfs(cur -> right);
+>         return head;
+>     }
+> };
+> ```
 
 
 
