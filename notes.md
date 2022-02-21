@@ -34,6 +34,18 @@ ListNode* res = new ListNode(0), *cur = res;
 
 直接可以使用 `if (exs[num])`
 
+**遍历 map**
+
+```C++
+map<int, int>::iterator iter = m.begin();
+while (iter != m.end()){
+    cout << iter -> first << ":" << iter -> second << endl;
+    iter++;
+}
+```
+
+
+
 ### vector
 
 **初始化一维 vector**
@@ -2044,6 +2056,238 @@ pushed 是 popped 的排列。
 >     }
 > };
 > ```
+
+
+
+## 37 序列化二叉树
+
+请实现两个函数，分别用来序列化和反序列化二叉树。
+
+你需要设计一个算法来实现二叉树的序列化与反序列化。这里不限定你的序列 / 反序列化算法执行逻辑，你只需要保证一个二叉树可以被序列化为一个字符串并且将这个字符串反序列化为原始的树结构。
+
+**示例：**
+
+<img src="https://assets.leetcode.com/uploads/2020/09/15/serdeser.jpg" style="zoom:50%;" />
+
+```
+输入：root = [1,2,3,null,null,4,5]
+输出：[1,2,3,null,null,4,5]
+```
+
+> 思路： 层序遍历
+>
+> ```C++
+> class Codec {
+> public:
+> 
+>     // Encodes a tree to a single string.
+>     string serialize(TreeNode* root) {
+>         queue<TreeNode*> q;
+>         if (root == nullptr) return "[]";
+>         q.push(root);
+>         string res = "[";
+>         while(!q.empty()){
+>             if (q.front() == nullptr) {
+>                 res = res + "null,";
+>             } else {
+>                 res = res + to_string(q.front() -> val) + ",";
+>                 q.push(q.front() -> left);
+>                 q.push(q.front() -> right);
+>             }
+>             q.pop();
+>         }
+>         res = res + "]";
+>         return res;
+>     }
+> 
+>     // Decodes your encoded data to tree.
+>     TreeNode* deserialize(string data) {
+>         if (data.compare("[]") == 0) return nullptr;
+>         vector<TreeNode*> v = split(data);
+>         queue<TreeNode*> q;
+>         q.push(v[0]);
+>         int i = 1;
+>         while(!q.empty()){
+>             q.front() -> left = v[i];
+>             if (v[i] != nullptr) q.push(v[i]);
+>             i++;
+>             q.front() -> right = v[i];
+>             if (v[i] != nullptr) q.push(v[i]);
+>             i++;
+>             q.pop();
+>         }
+>         return v[0];
+>     }
+> 
+> 
+>     vector<TreeNode*> split(string s){
+>         vector<TreeNode*> v;
+>         string tmp = "";
+>         for (int i = 1; i < s.size() - 1; i++){
+>             if(s[i] != ','){
+>                 tmp += s[i];
+>             } else {
+>                 if (tmp.compare("null") == 0){
+>                     v.push_back(nullptr);
+>                 } else{
+>                     TreeNode* node = new TreeNode(stoi(tmp));
+>                     v.push_back(node);
+>                 }
+>                 tmp = "";
+>             }
+>         }
+>         return v;
+>     }
+> };
+> ```
+
+
+
+## 38 字符串的全排列
+
+输入一个字符串，打印出该字符串中字符的所有排列。
+
+**示例1:**
+
+```
+输入：s = "abc"
+输出：["abc","acb","bac","bca","cab","cba"]
+```
+
+**示例2:**
+
+```
+输入：s = "aab"
+输出：["aab","aba","baa"]
+```
+
+> 思路：
+>
+> 回溯法，主要是怎么有效处理重复字符的情况
+>
+> ```C++
+> class Solution {
+> public:
+>     vector<string> res;
+>     vector<bool> used;
+>     vector<string> permutation(string s) {
+>         sort(s.begin(), s.end());
+>         used.assign(s.size(), false);
+>         string path = "";
+>         backtrack(path, s);
+>         return res;
+>     }
+> 
+>     void backtrack(string path, string s){
+>         if (path.size() == s.size()){
+>             res.push_back(path);
+>             return;
+>         }
+>         for (int i = 0; i < s.size(); i++){
+>             if (isValid(i, s)){
+>                 path.push_back(s[i]);
+>                 used[i] = true;
+>                 backtrack(path, s);
+>                 path.pop_back();
+>                 used[i] = false;
+>             }
+>         }
+>     }
+>     
+>     bool isValid(int i, string s){
+>         if (!used[i]){
+>             if(i == 0) return true;
+>             if (s[i] == s[i-1] && !used[i-1]){
+>                 return false;
+>             } else {
+>                 return true;
+>             }
+>         } else {
+>             return false;
+>         }
+>     }
+> };
+> ```
+
+
+
+## 39 数组中出现次数超过一半的数字
+
+数组中有一个数字出现的次数超过数组长度的一半，请找出这个数字。
+
+你可以假设数组是非空的，并且给定的数组总是存在多数元素。
+
+**示例 1:**
+
+```
+输入: [1, 2, 3, 2, 2, 2, 5, 4, 2]
+输出: 2
+```
+
+> 思路1: HashMap
+>
+> ```C++
+> class Solution {
+> public:
+>     int majorityElement(vector<int>& nums) {
+>         map<int, int>m;
+>         for (int i = 0; i < nums.size(); i++){
+>             if (!m[nums[i]]){
+>                 m[nums[i]] = 1;
+>             } else {
+>                 m[nums[i]] += 1;
+>             }
+>         }
+>         map<int, int>::iterator iter = m.begin();
+>         while (iter != m.end()){
+>             if (iter -> second > nums.size() / 2){
+>                 return iter -> first;
+>             }
+>             iter++;
+>         }
+>         return -1;
+>     }
+> };
+> ```
+>
+> 思路2: 排序
+>
+> ```C++
+> class Solution {
+> public:
+>     int majorityElement(vector<int>& nums) {
+>         sort(nums.begin(), nums.end());
+>         return nums[nums.size() / 2];
+>     }
+> };
+> ```
+>
+> 思路3: 摩尔投票法（同归于尽法）
+>
+> <img src="https://pic.leetcode-cn.com/1603612327-bOQxzq-Picture1.png" style="zoom: 50%;" />
+>
+> ```C++
+> class Solution {
+> public:
+>     int majorityElement(vector<int>& nums) {
+>         int votes = 0;
+>         int x;
+>         for (int i = 0; i < nums.size(); i++){
+>             if (votes == 0){
+>                 x = nums[i];
+>             }
+>             if (nums[i] == x){
+>                 votes++;
+>             } else {
+>                 votes--;
+>             }
+>         }
+>         return x;
+>     }
+> };
+> ```
+
+
 
 
 
