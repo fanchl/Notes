@@ -53,6 +53,7 @@ while (iter != m.end()){
 ```C++
 vector<string> words1 {"the", "frogurt", "is", "also", "cursed"};
 vector<int> a(10, 0))
+vector<int> res (arr.begin(), arr.begin() + k);
 ```
 
 **初始化二维 vector**
@@ -2288,6 +2289,54 @@ pushed 是 popped 的排列。
 > ```
 
 
+
+## 40 最小的 k 个数
+
+输入整数数组 `arr` ，找出其中最小的 `k` 个数。例如，输入4、5、1、6、2、7、3、8这8个数字，则最小的4个数字是1、2、3、4。
+
+**示例 1：**
+
+```
+输入：arr = [3,2,1], k = 2
+输出：[1,2] 或者 [2,1]
+```
+
+**示例 2：**
+
+```
+输入：arr = [0,1,2,1], k = 1
+输出：[0]
+```
+
+> 思路：
+>
+> 哨兵划分操作
+>
+> ```C++
+> class Solution {
+> public:
+>     vector<int> getLeastNumbers(vector<int>& arr, int k) {
+>         if (arr.size() == 0) return arr;
+>         quicksort(arr, 0, arr.size() - 1);
+>         vector<int> res (arr.begin(), arr.begin() + k);
+>         return res;
+> 
+>     }
+> 
+>     void quicksort(vector<int>& a, int l, int r){
+>         if (l >= r) return ;
+>         int i = l, j = r;
+>         while(i < j) {
+>             while (i < j && a[j] >= a[l]) j--;
+>             while (i < j && a[i] <= a[l]) i++;
+>             swap(a[i], a[j]);
+>         }
+>         swap(a[l], a[i]);
+>         quicksort(a, l, i-1);
+>         quicksort(a, i+1, r);
+>     }
+> };
+> ```
 
 
 
