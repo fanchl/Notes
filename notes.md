@@ -2337,6 +2337,157 @@ pushed 是 popped 的排列。
 >     }
 > };
 > ```
+>
+> 根据 i 和 k 的大小，减去不必要的操作。
+>
+> ```C++
+> class Solution {
+> public:
+>     int k;
+>     vector<int> getLeastNumbers(vector<int>& arr, int k) {
+>         if (arr.size() == 0) return arr;
+>         this -> k = k;
+>         quicksort(arr, 0 ,arr.size() - 1);
+>         vector<int> res(arr.begin(), arr.begin() + k);
+>         return res;
+>     }
+> 
+>     void quicksort(vector<int>& arr, int l, int r){
+>         if (l >= r) return;
+>         int i = l, j = r;
+>         while(i < j){
+>             while(i < j && arr[j] >= arr[l]) j--;
+>             while(i < j && arr[i] <= arr[l]) i++;
+>             swap(arr[i], arr[j]); 
+>         }
+>         swap(arr[l], arr[i]);
+>         if (i <= k) quicksort(arr, i + 1, r);  // 说明左边的i个数都属于最小的前k个数，那么只用对右半部分排序。
+>         if (i > k) quicksort(arr, l, i - 1);
+>     }
+> };
+> ```
+
+
+
+## 42 连续子数组的最大和
+
+输入一个整型数组，数组中的一个或连续多个整数组成一个子数组。求所有子数组的和的最大值。
+
+要求时间复杂度为O(n)。
+
+**示例1:**
+
+```
+输入: nums = [-2,1,-3,4,-1,2,1,-5,4]
+输出: 6
+解释: 连续子数组 [4,-1,2,1] 的和最大，为 6。
+```
+
+> 思路：
+>
+> 如果前面的和小于0，则令当前最大值为当前遍历的值。
+>
+> ```C++
+> class Solution {
+> public:
+> 	int maxSubArray(vector<int>& nums) {
+> 		int res = nums[0];
+> 		int cur = nums[0];
+> 		for (int i = 1; i < nums.size(); i++){
+> 			if (cur < 0) cur = nums[i];
+> 			else cur = cur + nums[i];
+> 			res = max(res, cur);
+> 		}
+> 		return res;
+> 	}
+> };
+> ```
+>
+> 动态规划，`nums[i]` 表示到 `i` 位置连续子数组的最大和。
+>
+> ```C++
+> class Solution {
+> public:
+> 	int maxSubArray(vector<int>& nums) {
+> 		for (int i = 1; i < nums.size(); i++){
+>             if (nums[i - 1] > 0){
+>                 nums[i] = nums[i] + nums[i - 1];
+>             }
+>         }
+>         return *max_element(nums.begin(), nums.end());
+> 	}
+> };
+> ```
+
+
+
+## 43 1-n 整数中 1 出现的次数
+
+输入一个整数 n ，求1～n这n个整数的十进制表示中1出现的次数。
+
+例如，输入12，1～12这些整数中包含1 的数字有1、10、11和12，1一共出现了5次。
+
+**示例 1：**
+
+```
+输入：n = 12
+输出：5
+```
+
+**示例 2：**
+
+```
+输入：n = 13
+输出：6
+```
+
+> 思路1: 暴力求解
+>
+> ```C++
+> class Solution {
+> public:
+> 	int countDigitOne(int n) {
+> 		int res = 0;
+> 		for (int i = 0; i <= n; i++){
+> 			int tmp = i;
+> 			while(tmp > 0){
+> 				if (tmp % 10 == 1){
+> 					res++;
+> 				}
+> 				tmp /= 10;
+> 			}
+> 		}
+> 		return res;
+> 	}
+> };
+> ```
+>
+> 思路2：找规律
+>
+> <img src="https://pic.leetcode-cn.com/1f7e8ce0bf03c7fc974082c32ec909ebffc6429636ec46cecd492604c65ec87f-Picture6.png" style="zoom:48%;" />
+>
+> ```C++
+> class Solution {
+> public:
+> 	int countDigitOne(int n) {
+> 		int res = 0;
+> 		long digit = 1;
+> 		int cur  = n % 10;
+> 		int high = n / 10;
+> 		int low = 0;
+> 		while(high != 0 || cur != 0){
+> 			if (cur == 0) res += high * digit;
+> 			else if (cur == 1) res += high * digit + low + 1;
+> 			else res += (high + 1) * digit;
+> 			low += cur * digit;
+> 			cur = high % 10;
+> 			high /= 10;
+> 			digit *= 10;
+> 		}
+> 		return res;
+> 	}
+> };
+> ```
 
 
 
