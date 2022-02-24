@@ -2491,4 +2491,45 @@ pushed 是 popped 的排列。
 
 
 
+## 45 把数组排成最小的数
+
+输入一个非负整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。
+
+**示例 1:**
+
+```
+输入: [10,2]
+输出: "102"
+```
+
+**示例 2:**
+
+```
+输入: [3,30,34,5,9]
+输出: "3033459"
+```
+
+> 思路：
+>
+> <img src="https://pic.leetcode-cn.com/95e81dbccc44f26292d88c509afd68204a86b37d342f83d109fa7aa0cd4a6049-Picture1.png" style="zoom:48%;" />
+>
+> ```C++
+> class Solution {
+> public:
+>     string minNumber(vector<int>& nums) {
+>         vector<string> strs;
+>         string res;
+>         for(int i = 0; i < nums.size(); i++){
+>             strs.push_back(to_string(nums[i]));
+>         }
+>         sort(strs.begin(), strs.end(), [](string& x, string& y){ return x + y < y + x; });
+>         for(int i = 0; i < strs.size(); i++){
+>             res.append(strs[i]);
+>         }
+>         return res;
+>     }
+> };
+> ```
+
+
 
