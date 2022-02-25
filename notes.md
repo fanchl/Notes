@@ -2533,3 +2533,110 @@ pushed 是 popped 的排列。
 
 
 
+## 46 把数字翻译成字符串
+
+
+
+给定一个数字，我们按照如下规则把它翻译为字符串：0 翻译成 “a” ，1 翻译成 “b”，……，11 翻译成 “l”，……，25 翻译成 “z”。一个数字可能有多个翻译。请编程实现一个函数，用来计算一个数字有多少种不同的翻译方法。
+
+**示例 1:**
+
+```
+输入: 12258
+输出: 5
+解释: 12258有5种不同的翻译，分别是"bccfi", "bwfi", "bczi", "mcfi"和"mzi"
+```
+
+> 思路1：动态规划（有条件的斐波那契数列）
+>
+> ```C++
+> class Solution {
+> public:
+> 	int translateNum(int num) {
+> 		vector<int> nums;
+> 		int pre_2 = 1;
+> 		int pre_1 = 1;
+> 		int res = 1;
+> 		int n = num;
+> 		while(n > 0){
+> 			nums.insert(nums.begin(), n % 10);
+> 			n /= 10;
+> 		}
+> 		for (int i = 1; i < nums.size(); i++){
+> 			if ((nums[i-1] * 10 + nums[i] <= 25) && nums[i-1] != 0){
+> 				res = pre_1 + pre_2;
+> 			} else {
+> 				res = pre_1;
+> 			}
+> 			pre_2 = pre_1;
+> 			pre_1 = res;
+> 		}
+> 		return res;
+> 	}
+> };
+> ```
+
+
+
+## 47 礼物的最大价值
+
+在一个 m*n 的棋盘的每一格都放有一个礼物，每个礼物都有一定的价值（价值大于 0）。你可以从棋盘的左上角开始拿格子里的礼物，并每次向右或者向下移动一格、直到到达棋盘的右下角。给定一个棋盘及其上面的礼物的价值，请计算你最多能拿到多少价值的礼物？
+
+**示例 1:**
+
+```
+输入: 
+[
+  [1,3,1],
+  [1,5,1],
+  [4,2,1]
+]
+输出: 12
+解释: 路径 1→3→5→2→1 可以拿到最多价值的礼物
+```
+
+> 思路：动态规划
+>
+> 一、处理边界问题
+>
+> 时间复杂度 O(MN); 空间复杂度 O(1)
+>
+> ```C++
+> class Solution {
+> public:
+>     int maxValue(vector<vector<int>>& grid) {
+>         for (int i = 0; i < grid.size(); i++){
+>             for (int j = 0; j < grid[0].size(); j++){
+>                 if (i == 0 && j == 0) continue;
+>                 else if (i == 0) grid[0][j] += grid[0][j-1];
+>                 else if (j == 0) grid[i][0] += grid[i-1][0];
+>                 else {
+>                     grid[i][j] = max(grid[i-1][j], grid[i][j-1]) + grid[i][j];
+>                 }
+>             }
+>         }
+>         return grid[grid.size() - 1][grid[0].size() - 1];
+>     }
+> };
+> ```
+>
+> 二、添加辅助边界
+>
+> 时间复杂度 O(MN); 空间复杂度 O(MN)
+>
+> ```C++
+> class Solution {
+> public:
+>     int maxValue(vector<vector<int>>& grid) {
+>         vector<vector<int>> dp (grid.size() + 1, vector<int>(grid[0].size() + 1, 0));
+>         for (int i = 1; i < dp.size(); i++){
+>             for (int j = 1; j < dp[0].size(); j++){
+>                 dp[i][j] = max(dp[i-1][j], dp[i][j-1]) + grid[i-1][j-1];
+>             }
+>         }
+>         return dp[dp.size()-1][dp[0].size()-1];
+>     }
+> };
+> ```
+
+
