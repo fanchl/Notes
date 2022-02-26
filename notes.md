@@ -2640,3 +2640,70 @@ pushed 是 popped 的排列。
 > ```
 
 
+
+## 50 第一个只出现一次的字符
+
+在字符串 s 中找出第一个只出现一次的字符。如果没有，返回一个单空格。 s 只包含小写字母。
+
+**示例 1:**
+
+```
+输入：s = "abaccdeff"
+输出：'b'
+```
+
+**示例 2:**
+
+```
+输入：s = "" 
+输出：' '
+```
+
+> 思路：哈希表
+>
+> 第二次循环遍历字符串
+>
+> ```C++
+> class Solution {
+> public:
+>     char firstUniqChar(string s) {
+>         map<char, bool> dic;
+>         for(int i = 0; i < s.size(); i++){
+>             if (dic.find(s[i]) == dic.end()){
+>                 dic[s[i]] = true;
+>             } else if (dic[s[i]] == true) {
+>                 dic[s[i]] = false;
+>             }
+>         }
+>         for (char c : s){
+>             if (dic[c]) return c;
+>         }
+>         return ' ';
+>     }
+> };
+> ```
+>
+> 利用辅助 vector 构建有序 map 遍历，在字符串很长的时候，能够减少循环次数。
+>
+> ```C++
+> class Solution {
+> public:
+>     char firstUniqChar(string s) {
+>         map<char, bool> dic;
+>         vector<char> keys;
+>         for(int i = 0; i < s.size(); i++){
+>             if (dic.find(s[i]) == dic.end()){
+>                 dic[s[i]] = true;
+>                 keys.push_back(s[i]);
+>             } else if (dic[s[i]] == true) {
+>                 dic[s[i]] = false;
+>             }
+>         }
+>         for (char c : keys){
+>             if (dic[c]) return c;
+>         }
+>         return ' ';
+>     }
+> };
+> ```
+
