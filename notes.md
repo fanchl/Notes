@@ -2078,6 +2078,15 @@ pushed 是 popped 的排列。
 > 思路： 层序遍历
 >
 > ```C++
+> /**
+>  * Definition for a binary tree node.
+>  * struct TreeNode {
+>  *     int val;
+>  *     TreeNode *left;
+>  *     TreeNode *right;
+>  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+>  * };
+>  */
 > class Codec {
 > public:
 > 
@@ -2089,9 +2098,9 @@ pushed 是 popped 的排列。
 >         string res = "[";
 >         while(!q.empty()){
 >             if (q.front() == nullptr) {
->                 res = res + "null,";
+>                 res += "null,";
 >             } else {
->                 res = res + to_string(q.front() -> val) + ",";
+>                 res += to_string(q.front() -> val) + ",";
 >                 q.push(q.front() -> left);
 >                 q.push(q.front() -> right);
 >             }
@@ -2711,6 +2720,47 @@ pushed 是 popped 的排列。
 
 
 
+## 49 丑数
+
+我们把只包含质因子 2、3、5 的数称作丑数（Ugly Number）。求按从小到大的顺序的第 n 个丑数。
+
+示例：
+
+```
+输入: n = 10
+输出: 12
+解释: 1, 2, 3, 4, 5, 6, 8, 9, 10, 12 是前 10 个丑数。
+```
+
+> 思路：
+>
+> 设置3个索引a, b, c，分别记录前几个数已经被乘2， 乘3， 乘5了，比如a表示前(a-1)个数都已经乘过一次2了，下次应该乘2的是第a个数；b表示前(b-1)个数都已经乘过一次3了，下次应该乘3的是第b个数；c表示前(c-1)个数都已经乘过一次5了，下次应该乘5的是第c个数；
+>
+> ```C++
+> class Solution {
+> public:
+>     int nthUglyNumber(int n) {
+>         vector<int> dp(n, 0);
+>         dp[0] = 1;
+>         int a = 0, b = 0, c = 0;
+>         for (int i = 1; i < n; i++){
+>             int n1 = dp[a] * 2;
+>             int n2 = dp[b] * 3;
+>             int n3 = dp[c] * 5;
+>             dp[i] = min(min(n1, n2), n3);
+>             if (dp[i] == n1) a++;
+>             if (dp[i] == n2) b++;
+>             if (dp[i] == n3) c++;
+>         }
+>         return dp[n-1];
+>     }
+> };
+> ```
+
+
+
+
+
 ## 50 第一个只出现一次的字符
 
 在字符串 s 中找出第一个只出现一次的字符。如果没有，返回一个单空格。 s 只包含小写字母。
@@ -2776,4 +2826,3 @@ pushed 是 popped 的排列。
 >     }
 > };
 > ```
-
