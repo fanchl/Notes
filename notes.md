@@ -2826,3 +2826,51 @@ pushed 是 popped 的排列。
 >     }
 > };
 > ```
+
+
+
+
+
+## 52 两个链表的第一个公共节点
+
+输入两个链表，找出它们的第一个公共节点。
+
+如下面的两个链表**：**
+
+![](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/160_statement.png)
+
+在节点 c1 开始相交。
+
+> 思路：
+> 链表A ：(a-c) + c
+>
+> 链表B ：(b-c) + c
+>
+> (a-c) + c + (b-c) = (b-c) + c + (a-c)
+>
+> ```C++
+> class Solution {
+> public:
+>     ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+>         ListNode* A = headA;
+>         ListNode* B = headB;
+>         while (A != B){
+>             if (A != nullptr) {
+>                 A = A -> next;
+>             } else {
+>                 A = headB;
+>             }
+>             if (B != nullptr) {
+>                 B = B -> next;
+>             } else {
+>                 B = headA;
+>             }
+>         }
+>         return A;
+>     }
+> };
+> ```
+
+
+
+
