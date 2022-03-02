@@ -2873,4 +2873,49 @@ pushed 是 popped 的排列。
 
 
 
+## 53-1 在排序数组中查找数字 I
+
+统计一个数字在排序数组中出现的次数。
+
+**示例 1:**
+
+```
+输入: nums = [5,7,7,8,8,10], target = 8
+输出: 2
+```
+
+**示例 2:**
+
+```
+输入: nums = [5,7,7,8,8,10], target = 6
+输出: 0
+```
+
+> 思路：二分法
+>
+> <img src="https://pic.leetcode-cn.com/b4521d9ba346cad9e382017d1abd1db2304b4521d4f2d839c32d0ecff17a9c0d-Picture1.png" style="zoom:48%;" />
+>
+> ```C++
+> class Solution {
+> public:
+>     int search(vector<int>& nums, int target) {
+>         int i = 0, j = nums.size() - 1;
+>         while (i <= j) {
+>             int m = (i + j) / 2;
+>             if (nums[m] < target) i = m + 1;
+>             else j = m - 1;
+>         }
+>         int left = j;
+>         i = 0, j = nums.size() - 1;
+>         while (i <= j) {
+>             int m = (i + j) / 2;
+>             if (nums[m] <= target) i = m + 1;
+>             else j = m - 1;
+>         }
+>         int right = i;        
+>         return right - left - 1;
+>     }
+> };
+> ```
+
 
