@@ -3053,4 +3053,59 @@ pushed 是 popped 的排列。
 
 
 
+## 55-I 二叉树的深度
+
+输入一棵二叉树的根节点，求该树的深度。从根节点到叶节点依次经过的节点（含根、叶节点）形成树的一条路径，最长路径的长度为树的深度。
+
+例如：
+
+给定二叉树 `[3,9,20,null,null,15,7]`，
+
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+
+返回它的最大深度 3 。
+
+> 思路1: 递归 DFS
+>
+> ```C++
+> class Solution {
+> public:
+>     int maxDepth(TreeNode* root) {
+>         if (root == nullptr) return 0;
+>         return max(maxDepth(root -> left), maxDepth(root -> right)) + 1;
+>     }
+> };
+> ```
+>
+> 思路2: 队列 BFS
+>
+> ```C++
+> class Solution {
+> public:
+>     int maxDepth(TreeNode* root) {
+>         if (root == nullptr) return 0;
+>         queue<TreeNode*> q;
+>         q.push(root);
+>         int res = 0;
+>         while(!q.empty()){
+>             int n = q.size();
+>             for (int i = 0; i < n; i++){
+>                 TreeNode* node = q.front();
+>                 if (node -> left != nullptr) q.push(node -> left);
+>                 if (node -> right != nullptr) q.push(node -> right);
+>                 q.pop();
+>             }
+>             res++;
+>         }
+>         return res;
+>     }
+> };
+> ```
+
 
