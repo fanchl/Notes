@@ -3287,7 +3287,7 @@ public:
 输出：[[1,2,3,4,5],[4,5,6],[7,8]]
 ```
 
-> 思路：滑动窗口
+> 思路：双重循环，会有一些重复的相加操作
 ```C++
 class Solution {
 public:
@@ -3310,5 +3310,34 @@ public:
         }
         return res;
     }
+};
+```
+
+> 思路：滑动窗口，没有重复操作
+```C++
+class Solution {
+public:
+	vector<vector<int>> findContinuousSequence(int target) {
+		vector<vector<int>> res;
+		int i = 1, j = 2, s = 3;
+		while (i < target/2 + 1){
+			if (s < target) {
+				j++;
+				s += j;
+			} else if (s > target){
+				s -= i;
+				i++;
+			} else{
+				vector<int> tmp;
+				for (int m = i; m <= j; m++){
+					tmp.push_back(m);
+				}
+				res.push_back(tmp);
+				s -= i;
+				i++;
+			}
+		}
+		return res;
+	}
 };
 ```
