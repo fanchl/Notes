@@ -2153,6 +2153,60 @@ pushed 是 popped 的排列。
 
 
 
+> 递归解法：理论上效率稍差，但是思路清晰
+>
+> ```java
+> public class Codec {
+> 
+>     final String NULL = "#";
+>     final String SEPARATOR = ",";
+>     public String serialize(TreeNode node) {
+>         StringBuilder sb = new StringBuilder();
+>         serialize(node, sb);
+>         return sb.toString();
+>     }
+> 
+>     public void serialize(TreeNode node, StringBuilder builder){
+>         if(node == null) {
+>             builder.append(NULL).append(SEPARATOR);
+>             return;
+>         }
+> 
+>         serialize(node.left, builder);
+>         serialize(node.right, builder);
+> 
+>         builder.append(node.val).append(SEPARATOR);
+> 
+>     }
+> 
+>     public TreeNode deserialize(String data) {
+>         LinkedList<String> nodes = new LinkedList<String>();
+>         for(String val : data.split(SEPARATOR)) {
+>             nodes.add(val);
+>         }
+>         return deserialize(nodes);
+> 
+>     }
+> 
+>     public TreeNode deserialize(LinkedList<String> nodes) {
+>         if(nodes.isEmpty()) return null;
+>         
+>         String node = nodes.removeLast();
+>         if(node.equals(NULL)) return null;
+>         TreeNode root = new TreeNode(Integer.parseInt(node));
+>         
+>         root.right = deserialize(nodes);
+>         root.left = deserialize(nodes);
+> 
+>         return root;
+> 
+> 
+>     }
+> }
+> ```
+>
+> 
+
 ## 38 字符串的全排列
 
 输入一个字符串，打印出该字符串中字符的所有排列。
