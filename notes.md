@@ -3473,3 +3473,53 @@ public:
     }   
 };
 ```
+
+## 59-I 滑动窗口的最大值
+给定一个数组 nums 和滑动窗口的大小 k，请找出所有滑动窗口里的最大值。
+
+**示例:**
+```
+输入: nums = [1,3,-1,-3,5,3,6,7], 和 k = 3
+输出: [3,3,5,5,6,7] 
+解释: 
+
+  滑动窗口的位置                最大值
+---------------               -----
+[1  3  -1] -3  5  3  6  7       3
+ 1 [3  -1  -3] 5  3  6  7       3
+ 1  3 [-1  -3  5] 3  6  7       5
+ 1  3  -1 [-3  5  3] 6  7       5
+ 1  3  -1  -3 [5  3  6] 7       6
+ 1  3  -1  -3  5 [3  6  7]      7
+```
+
+> 思路： 双向队列，单调队列
+1. deque 内 **仅包含窗口内的元素**，每轮窗口滑动移除了元素 nums[i-1]，需将 deque 内对应的元素一起删除。
+2. deque 内的元素 **非严格递减**， 每轮窗口滑动添加了元素 nums[j+1]，需将 deque 内所小于 nums[j+1] 的元素删除。
+
+```C++
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        vector<int> res;
+        int j = 0;
+        int i = 1 - k;
+        deque<int> tmp;
+        while (j < nums.size()){
+            if (i > 0 && tmp.front() == nums[i - 1]){
+                tmp.pop_front();
+            }
+            while (!tmp.empty() && tmp.back() < nums[j]){
+                tmp.pop_back();
+            }
+            tmp.push_back(nums[j]);
+            if (i >= 0){
+                res.push_back(tmp.front());
+            }
+            i++;
+            j++;
+        }
+        return res;
+    }
+};
+```
