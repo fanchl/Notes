@@ -3604,8 +3604,10 @@ public:
 输出: [0.02778,0.05556,0.08333,0.11111,0.13889,0.16667,0.13889,0.11111,0.08333,0.05556,0.02778]
 ```
 > 思路：动态规划
+f(2,7) = f(1, 7-1) + f(1, 7-2) + ... + f(1, 7-6)
 ![](https://pic.leetcode-cn.com/1614960989-tpJNRQ-Picture2.png)
 
+目前这个版本还存在多申请一部分空间的问题。
 ```C++
 class Solution {
 public:
@@ -3628,6 +3630,67 @@ public:
             dp = tmp;
         }
         return vector<double> (dp.begin() + n, dp.end());
+    }
+};
+```
+
+修改索引，解决申请多余空间的问题。
+```C++
+class Solution {
+public:
+    vector<double> dicesProbability(int n) {
+        vector<double> dp (6, 1.0/6);
+        for (int i = 2; i <= n; i++){
+            vector<double> tmp (5 * i + 1, 0);
+            for (int j = 0; j <= 5 * i; j++){
+                for (int k = 0; k < 6; k++){
+                    if (j - k >= 0){
+                        if (j - k <= 5 * (i - 1))
+                        tmp[j] = tmp[j] + dp[j - k] * (1.0 / 6);
+                    } else {
+                        break;
+                    }
+                }
+            }
+            dp = tmp;
+        }
+        return dp;
+    }
+};
+```
+
+## 61 扑克牌中的数字
+从若干副扑克牌中随机抽 5 张牌，判断是不是一个顺子，即这5张牌是不是连续的。2～10为数字本身，A为1，J为11，Q为12，K为13，而大、小王为 0 ，可以看成任意数字。A 不能视为 14。
+
+**示例 1:**
+```
+输入: [1,2,3,4,5]
+输出: True
+``` 
+
+**示例 2:**
+```
+输入: [0,0,1,2,5]
+输出: True
+```
+
+> 思路：集合
+![](https://pic.leetcode-cn.com/df03847e2d04a3fcb5649541d4b6733fb2cb0d9293c3433823e04935826c33ef-Picture1.png)
+
+```C++
+class Solution {
+public:
+    bool isStraight(vector<int>& nums) {
+        set<int> tmp;
+        int mi = 14, ma = 0;
+        for (int i = 0; i < nums.size(); i++){
+            if (nums[i] == 0) continue;
+            if (tmp.find(nums[i]) != tmp.end()) return false;
+            if (nums[i] < mi) mi = nums[i];
+            if (nums[i] > ma) ma = nums[i];
+            tmp.insert(nums[i]);
+        }
+        return ma - mi < 5;
     }
 };
 ```
