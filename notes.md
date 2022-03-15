@@ -3998,3 +3998,39 @@ public:
     }
 };
 ```
+
+> 思路2: 哈希表
+```C++
+class Solution {
+public:
+    unordered_map<int, TreeNode*> parent;
+    unordered_map<int, bool> visited;
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        parent[root -> val] = nullptr;
+        dfs(root);
+        while (p != nullptr) {
+            visited[p -> val] = true;
+            p = parent[p -> val];
+        }
+        while (q != nullptr) {
+            if (visited[q -> val] == true) {
+                return q;
+            }
+            q = parent[q -> val];
+        }
+        return nullptr;
+    }
+
+    void dfs(TreeNode* root) {
+        if (root -> left != nullptr) {
+            parent[root -> left -> val] = root;
+            dfs(root -> left);
+        }
+        if (root -> right != nullptr) {
+            parent[root -> right -> val] = root;
+            dfs(root -> right);
+        }
+    }
+};
+```
+
