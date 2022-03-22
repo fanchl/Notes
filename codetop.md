@@ -106,3 +106,57 @@ public:
 	}
 };
 ```
+
+
+## 5 最长回文字符串
+给你一个字符串 s，找到 s 中最长的回文子串。
+
+**示例 1：**
+```
+输入：s = "babad"
+输出："bab"
+解释："aba" 同样是符合题意的答案。
+```
+***示例 2：**
+```
+输入：s = "cbbd"
+输出："bb"
+```
+
+> 思路：中心扩散算法
+
++ C++ `pair<T, T>` 的用法。
++ 回文字符串 的长度有可能是奇数也有可能是偶数，两者需要分别考虑。
+
+```C++
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int len = s.size();
+        if (len == 0 || len == 1) return s;
+        int start = 0;
+        int end = 0;
+        for (int i = 0; i < len; i++) {
+            auto [l1, r1] = expendAroundCenter(s, i, i);
+            auto [l2, r2] = expendAroundCenter(s, i, i + 1);
+            if (r1 - l1 > end - start) {
+                start = l1;
+                end = r1;
+            }
+            if (r2 - l2 > end - start) {
+                start = l2;
+                end = r2;
+            }
+        }
+        return s.substr(start, end - start + 1);
+    }
+
+    pair<int, int> expendAroundCenter(string s, int l, int r) {
+        while (l >= 0 && r < s.size() && s[r] == s[l]) {
+            l--;
+            r++;
+        }
+        return {l + 1, r - 1};
+    }
+};
+```
