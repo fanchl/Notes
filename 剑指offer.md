@@ -258,6 +258,36 @@ std::cout << "2) " << s << '\n';
 输出："We%20are%20happy."
 ```
 
+> 思路：双指针
+```C++
+class Solution {
+public:
+    string replaceSpace(string s) {
+        int cnt = 0;
+        for (int i = 0; i < s.size(); i++) {
+            if (s[i] == ' ') cnt++;
+        }
+        int originSize = s.size();
+        s.resize(originSize + cnt * 2);
+        int i = originSize - 1, j = s.size() - 1;
+        while (i < j) {
+            if (s[i] == ' ') {
+                s[j] = '0';
+                s[j - 1] = '2';
+                s[j - 2] = '%';
+                j -= 3;
+                i--;
+            } else {
+                s[j] = s[i];
+                i--;
+                j--;
+            }
+        }
+        return s;
+    }
+};
+```
+
 > 思路：从头开始替换会出现索引变化，从结尾开始替换。
 >
 > 遍历数组，遇到空格，删除空格并添加添加 "%20".
