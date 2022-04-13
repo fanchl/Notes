@@ -454,3 +454,40 @@ public:
     }
 };
 ```
+
+## 236 二叉树的最近公共祖先
+给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
+
+**示例 1：**
+
+![](https://assets.leetcode.com/uploads/2018/12/14/binarytree.png)
+
+```
+输入：root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+输出：3
+解释：节点 5 和节点 1 的最近公共祖先是节点 3 。
+```
+
+### 思路：DFS 后序遍历
+对每个节点都查找，查看其左右子树中对应的最近公共祖先是谁（如果不存在就是 `nullptr`），再根据左右子树返回的结果来判断最近公共祖先来自于谁。
+
+递归的结束条件：  
+1. 节点为 `p` 或者 `q`，因为再深就要失去一个节点了；
+2. 节点为 `nullptr`，再往下也没有 `p` 或 `q` 节点了。
+
+![](https://pic.leetcode-cn.com/1599885247-GEkXRi-Picture20.png)
+
+```C++
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if (root == nullptr || root == p || root == q) return root;
+        TreeNode *left = lowestCommonAncestor(root -> left, p, q);
+        TreeNode *right = lowestCommonAncestor(root -> right, p, q);
+        if (left == nullptr && right == nullptr) return nullptr;
+        if (left == nullptr) return right;
+        if (right == nullptr) return left;
+        return root;
+    }
+};
+```
